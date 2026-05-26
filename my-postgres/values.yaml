@@ -1,0 +1,17 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "15"
+  pullPolicy: IfNotPresent
+
+postgresql:
+  username: admin
+  password: admin123
+  database: mydb
+
+persistence:
+  enabled: true
+  size: 10Gi
+  mountPath: /var/lib/postgresql
+  dataSubPath: data

@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: my-hyperdisk-sc
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: postgres-app
+    meta.helm.sh/release-namespace: default
+provisioner: pd.csi.storage.gke.io
+parameters:
+  type: hyperdisk-balanced # Or hyperdisk-ssd, etc.
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer

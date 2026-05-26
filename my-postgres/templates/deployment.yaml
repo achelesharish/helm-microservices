@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-postgres.fullname" . }}
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "my-postgres.name" . }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ include "my-postgres.name" . }}
+
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: 5432
+
+          envFrom:
+            - secretRef:
+                name: {{ include "my-postgres.fullname" . }}
+
+          env:
+            - name: PGDATA
+              value: "{{ .Values.persistence.mountPath }}/{{ .Values.persistence.dataSubPath }}"
+
+          volumeMounts:
+            - name: postgres-data
+              mountPath: {{ .Values.persistence.mountPath }}
+
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: {{ include "my-postgres.fullname" . }}-pvc
